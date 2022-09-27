@@ -54,7 +54,7 @@ function App(): JSX.Element {
                     </Col>
                 </Row>
             </Container>
-            <Button onClick={() => console.log("Hello World")}>
+            <Button onClick={() => console.log("Hello World!")}>
                 Log Hello World
             </Button>
         </div>
