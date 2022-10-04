@@ -1,3 +1,4 @@
+import { stringify } from "querystring";
 import { Question, QuestionType } from "./interfaces/question";
 
 /**
@@ -10,7 +11,17 @@ export function makeBlankQuestion(
     name: string,
     type: QuestionType
 ): Question {
-    return {};
+    const newQuestion: Question = {
+        id: id,
+        name: name,
+        type: type,
+        body: "",
+        options: [],
+        expected: "",
+        points: 1,
+        published: false
+    };
+    return newQuestion;
 }
 
 /**
@@ -21,7 +32,16 @@ export function makeBlankQuestion(
  * HINT: Look up the `trim` and `toLowerCase` functions.
  */
 export function isCorrect(question: Question, answer: string): boolean {
-    return false;
+    const expectedTrimmed = question.expected.trim();
+    const expectedAnswer = expectedTrimmed.toLowerCase();
+    const answerTrimmed = answer.trim();
+    const answerAnswer = answerTrimmed.toLowerCase();
+
+    if (expectedAnswer === answerAnswer) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -31,7 +51,18 @@ export function isCorrect(question: Question, answer: string): boolean {
  * be exactly one of the options.
  */
 export function isValid(question: Question, answer: string): boolean {
-    return false;
+    if (question.type === "short_answer_question") {
+        return true;
+    } else {
+        const result = question.options.filter(
+            (value: string): boolean => value === answer
+        );
+        if (result.length === 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
 
 /**
@@ -41,7 +72,9 @@ export function isValid(question: Question, answer: string): boolean {
  * name "My First Question" would become "9: My First Q".
  */
 export function toShortForm(question: Question): string {
-    return "";
+    const idvalue = question.id.toString();
+    const answer = idvalue + ": " + question.name.substring(0, 10);
+    return answer;
 }
 
 /**
@@ -62,7 +95,31 @@ export function toShortForm(question: Question): string {
  * Check the unit tests for more examples of what this looks like!
  */
 export function toMarkdown(question: Question): string {
-    return "";
+    if (question.type === "multiple_choice_question") {
+        let answer = "# " + question.name;
+        answer = answer + "\n";
+        answer = answer + question.body + "\n";
+        answer = question.options.reduce(
+            (
+                resultSoFar: string,
+                value: string,
+                currentIndex: number
+            ): string => {
+                if (currentIndex === question.options.length - 1) {
+                    return resultSoFar + "- " + value;
+                } else {
+                    return resultSoFar + "- " + value + "\n";
+                }
+            },
+            answer
+        );
+        return answer;
+    } else {
+        let answer = "# " + question.name;
+        answer = answer + "\n";
+        answer = answer + question.body;
+        return answer;
+    }
 }
 
 /**
